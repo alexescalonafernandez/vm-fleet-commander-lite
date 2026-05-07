@@ -1,0 +1,38 @@
+# VM Fleet Commander Lite
+# B2.E1 - Manual VM baseline
+# File: 00-account-context.azcli
+#
+# Purpose:
+# - Confirm Azure CLI login state.
+# - Confirm the active Azure subscription.
+# - List available subscriptions if needed.
+# - Avoid creating resources in the wrong subscription.
+#
+# Safety:
+# - Read-only commands only.
+# - No Azure resources are created, modified, or deleted by this file.
+
+# 1. Show Azure CLI version.
+az version --output table
+
+# 2. Show the currently active Azure account and subscription.
+az account show --output table
+
+# 3. List all available subscriptions.
+az account list --output table
+
+# 4. Show the active subscription ID only.
+az account show --query id --output tsv
+
+# 5. Show the active subscription name only.
+az account show --query name --output tsv
+
+# 6. Optional: show the current default Azure CLI configuration.
+az config get --output table
+
+# 7. Project baseline values for reference.
+# Workload: b2-vmfleet
+# Environment: dev
+# Preferred region: westeurope
+# Resource group: rg-b2-vmfleet-dev-we-01
+# Initial VM name: vm-b2-linux-01
