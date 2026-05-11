@@ -10,17 +10,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
         '10.20.0.0/16'
       ]
     }
-    subnets: [
-      {
-        name: 'snet-vms-dev-we-01'
-        properties: {
-          addressPrefix: '10.20.1.0/24'
-          networkSecurityGroup: {
-            id: nsg.id
-          }
-        }
-      }
-    ]
   }
 }
 
@@ -46,6 +35,17 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
   }
 }
 
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+  name: 'snet-vms-dev-we-01'
+  parent: vnet
+  properties: {
+    addressPrefix: '10.20.1.0/24'
+    networkSecurityGroup: {
+      id: nsg.id
+    }
+  }
+}
+
 resource publicIp 'Microsoft.Network/publicIPAddresses@2023-11-01' = {
   name: 'pip-vm-b2-linux-01'
   location: location
@@ -66,7 +66,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-11-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: vnet.properties.subnets[0].id
+            id: subnet.id
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
@@ -82,5 +82,5 @@ output nicId string = nic.id
 output publicIpName string = publicIp.name
 output publicIpAddress string = publicIp.properties.ipAddress
 output vnetName string = vnet.name
-output subnetName string = vnet.properties.subnets[0].name
+output subnetName string = subnet.name
 output nsgName string = nsg.name
