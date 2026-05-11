@@ -1,21 +1,15 @@
-# Cleanup (Placeholder)
-
-Cleanup procedures will be added **before** real Azure deployments are introduced.
+# Cleanup
 
 Destructive commands must be reviewed before execution.
 
-## TODO: Deallocate VM
+## B2.E1 cleanup workflow
 
-- TODO: define process and validation checks.
+- Deallocate the VM after every practice session (mandatory).
+- Verify the final power state is `VM deallocated`.
+- Full Resource Group deletion is a destructive cleanup option and must be reviewed before execution.
+- Review-required TODO for future milestone: add a controlled Resource Group deletion runbook (without adding delete commands yet).
 
-## TODO: Delete resource group
+## Cost review
 
-- TODO: define safe deletion process.
-
-## TODO: Verify deletion
-
-- TODO: define post-deletion verification.
-
-## TODO: Cost review
-
-- TODO: define final cost validation steps.
+- Confirm no VM remains running.
+- Check for residual resource costs (for example disks and Public IPs).

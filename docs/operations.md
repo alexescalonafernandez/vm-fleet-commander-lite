@@ -1,26 +1,25 @@
-# Operations (Placeholder)
+# Operations
 
-This document defines the operational workflow that will be implemented in later milestones.
+## B2.E1 operational workflow
 
-## Planned task areas
+Run the B2.E1 manual VM baseline in the following order:
 
-- Check Azure account/subscription context
-  - TODO: add verification workflow
-- Validate deployments
-  - TODO: add validation workflow
-- Deploy infrastructure
-  - TODO: add deployment workflow
-- Inspect VM state
-  - TODO: add inspection workflow
-- SSH connection
-  - TODO: add secure access workflow
-- Start VM
-  - TODO: add start workflow
-- Stop/deallocate VM
-  - TODO: add stop and deallocate workflow
-- Troubleshoot SSH/networking
-  - TODO: add troubleshooting checklist
-- Cleanup resources
-  - TODO: add cleanup workflow
+1. Account context
+   - `scripts/azcli/00-account-context.azcli`
+2. Create VM baseline
+   - `scripts/azcli/01-create-manual-vm-baseline.azcli`
+3. Inspect resources
+   - `scripts/azcli/02-inspect-manual-vm-baseline.azcli`
+4. Test SSH
+   - `scripts/azcli/03-test-ssh-connectivity.azcli`
+5. Check power state and perform power operations
+   - `scripts/azcli/04-vm-power-operations.azcli`
+6. Deallocate VM
+   - `scripts/azcli/04-vm-power-operations.azcli`
+7. Verify deallocated state
+   - `scripts/azcli/04-vm-power-operations.azcli`
 
-> No real Azure commands are included in B2.E0.
+## Notes
+
+- This milestone uses Azure CLI command files (`.azcli`) executed from VS Code/PowerShell 7.
+- Bicep is not used in B2.E1.
