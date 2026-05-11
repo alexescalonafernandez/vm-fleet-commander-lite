@@ -1,20 +1,19 @@
-# Azure CLI scripts folder
+# Azure CLI scripts
 
-This folder will contain Azure CLI command files using the `.azcli` workflow in VS Code.
+This folder contains the B2.E1 Azure CLI-first workflow using `.azcli` command files.
 
-## Planned approach
-
-- Commands will be grouped by operation.
-- No operational commands are added in B2.E0.
-
-## Possible future files
+## Current scripts
 
 - `00-account-context.azcli`
-- `01-validate-deployment.azcli`
-- `02-deploy-infra.azcli`
-- `03-inspect-vm.azcli`
-- `04-vm-operations.azcli`
-- `05-cleanup.azcli`
+  - Verifies Azure account and subscription context before any resource operations.
+- `01-create-manual-vm-baseline.azcli`
+  - Creates the B2.E1 manual Linux VM baseline resources.
+- `02-inspect-manual-vm-baseline.azcli`
+  - Inspects baseline resources and captures key VM details.
+- `03-test-ssh-connectivity.azcli`
+  - Validates SSH connectivity to the VM and confirms basic Linux command execution.
+- `04-vm-power-operations.azcli`
+  - Handles VM power-state checks and deallocation verification.
 
 ## Safety note
 
