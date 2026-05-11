@@ -1,0 +1,56 @@
+# VM Fleet Commander Lite
+# B2.E1 - Manual VM baseline
+# File: 04-vm-power-operations.azcli
+#
+# Purpose:
+# - Inspect VM power state.
+# - Start the VM when needed.
+# - Deallocate the VM after practice sessions.
+#
+# Safety:
+# - start and deallocate modify VM power state.
+# - deallocate is required for cost control.
+# - Run commands intentionally, one by one.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$VM_NAME = "vm-b2-linux-01"
+
+# -------------------------------------------------------------------
+# 1. Check current VM power state
+# -------------------------------------------------------------------
+
+az vm get-instance-view `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" `
+  --output tsv
+
+# -------------------------------------------------------------------
+# 2. Start VM if needed
+# -------------------------------------------------------------------
+# Run only if the VM is deallocated/stopped and you need to practice.
+
+az vm start `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 3. Deallocate VM after practice
+# -------------------------------------------------------------------
+# Required cost-control action after VM practice sessions.
+
+az vm deallocate `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 4. Verify VM is deallocated
+# -------------------------------------------------------------------
+
+az vm get-instance-view `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" `
+  --output tsv

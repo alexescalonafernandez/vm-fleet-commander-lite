@@ -1,0 +1,49 @@
+# VM Fleet Commander Lite
+# B2.E1 - Manual VM baseline
+# File: 03-test-ssh-connectivity.azcli
+#
+# Purpose:
+# - Get the VM public IP.
+# - Test SSH connectivity to the Linux VM.
+#
+# Safety:
+# - Read-only from Azure perspective.
+# - Opens an interactive SSH session.
+# - Does not create, modify, or delete Azure resources.
+#
+# Manual validation inside the VM:
+# After connecting, run:
+#   whoami
+#   hostname
+#   cat /etc/os-release
+#   exit
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$VM_NAME = "vm-b2-linux-01"
+$ADMIN_USER = "azureuser"
+$SSH_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key"
+
+# -------------------------------------------------------------------
+# 1. Get VM public IP
+# -------------------------------------------------------------------
+
+$VM_PUBLIC_IP = az vm list-ip-addresses `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "[].virtualMachine.network.publicIpAddresses[0].ipAddress" `
+  --output tsv
+
+$VM_PUBLIC_IP
+
+# -------------------------------------------------------------------
+# 2. Test SSH connectivity
+# -------------------------------------------------------------------
+# This opens an interactive SSH session.
+#
+# Once connected to the VM, manually run:
+#   whoami
+#   hostname
+#   cat /etc/os-release
+#   exit
+
+ssh -i $SSH_KEY_PATH "$ADMIN_USER@$VM_PUBLIC_IP"
