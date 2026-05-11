@@ -1,0 +1,68 @@
+# VM Fleet Commander Lite
+# B2.E1 - Manual VM baseline
+# File: 02-inspect-manual-vm-baseline.azcli
+#
+# Purpose:
+# - Inspect the manually created VM baseline.
+# - Identify related Azure resources.
+# - Support documentation of the manual baseline.
+#
+# Safety:
+# - Read-only commands only.
+# - No Azure resources are created, modified, or deleted.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$VM_NAME = "vm-b2-linux-01"
+
+# -------------------------------------------------------------------
+# 1. Show resources in the lab resource group
+# -------------------------------------------------------------------
+
+az resource list `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 2. Show VM details
+# -------------------------------------------------------------------
+
+az vm show `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --show-details `
+  --output table
+
+# -------------------------------------------------------------------
+# 3. Show VM power state
+# -------------------------------------------------------------------
+
+az vm get-instance-view `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" `
+  --output tsv
+
+# -------------------------------------------------------------------
+# 4. Show VM public IP
+# -------------------------------------------------------------------
+
+az vm list-ip-addresses `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 5. Show NICs in the resource group
+# -------------------------------------------------------------------
+
+az network nic list `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 6. Show NSGs in the resource group
+# -------------------------------------------------------------------
+
+az network nsg list `
+  --resource-group $RG_NAME `
+  --output table
