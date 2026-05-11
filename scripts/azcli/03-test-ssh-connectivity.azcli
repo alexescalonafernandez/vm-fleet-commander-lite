@@ -38,11 +38,12 @@ $VM_PUBLIC_IP
 # -------------------------------------------------------------------
 # 2. Test SSH connectivity
 # -------------------------------------------------------------------
+# This opens an interactive SSH session.
+#
+# Once connected to the VM, manually run:
+#   whoami
+#   hostname
+#   cat /etc/os-release
+#   exit
 
 ssh -i $SSH_KEY_PATH "$ADMIN_USER@$VM_PUBLIC_IP"
-
-whoami
-hostname
-cat /etc/os-release
-
-exit
