@@ -1,6 +1,6 @@
 # Azure CLI scripts
 
-This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli` command files.
+This folder contains the B2.E1, B2.E2, and B2.E3 Azure CLI-first workflows using `.azcli` command files.
 
 ## Current scripts
 
@@ -33,3 +33,12 @@ This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli
 Commands that create, modify, or delete Azure resources must be reviewed before execution.
 
 SSH access is restricted by passing `sshSourceAddressPrefix` with the operator public IP resolved at runtime in the `.azcli` workflow.
+
+
+## B2.E3 runtime parameter handling
+
+For B2.E3, `infra/parameters/dev.bicepparam` reads dynamic runtime values with `readEnvironmentVariable()` (for `ADMIN_PUBLIC_KEY` and `SSH_SOURCE_ADDRESS_PREFIX`).
+
+The `.azcli` scripts (`06`, `07`, and `09`) set those environment variables immediately before validate/what-if/deploy operations, then remove them at the end of execution.
+
+This keeps real public SSH key content and operator public IP prefix values out of version control while preserving the same resource-group deployment scope.

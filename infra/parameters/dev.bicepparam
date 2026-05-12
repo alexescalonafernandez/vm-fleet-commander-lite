@@ -6,8 +6,10 @@ param environmentName = 'dev'
 param adminUsername = 'azureuser'
 param vmSize = 'Standard_B1s'
 
-// adminPublicKey must be the full public key content, not a filesystem path to a .pub file.
-param adminPublicKey = 'REPLACE_WITH_PUBLIC_SSH_KEY_CONTENT'
+// Runtime value is provided by the local .azcli workflow via environment variable.
+// The real SSH public key content is not hardcoded in version control.
+param adminPublicKey = readEnvironmentVariable('ADMIN_PUBLIC_KEY')
 
-// Placeholder only; normal .azcli execution passes this value at runtime.
-param sshSourceAddressPrefix = 'REPLACE_WITH_OPERATOR_PUBLIC_IP_CIDR'
+// Runtime value is provided by the local .azcli workflow via environment variable.
+// The operator public IP prefix is not hardcoded in version control.
+param sshSourceAddressPrefix = readEnvironmentVariable('SSH_SOURCE_ADDRESS_PREFIX')
