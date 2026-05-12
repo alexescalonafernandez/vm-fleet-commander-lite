@@ -1,6 +1,9 @@
 @description('Azure region for network resources.')
 param location string
 
+@description('Source CIDR allowed to SSH to the VM NSG rule.')
+param sshSourceAddressPrefix string
+
 resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: 'vnet-b2-vmfleet-dev-we-01'
   location: location
@@ -27,7 +30,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '22'
-          sourceAddressPrefix: '*' // TODO: Restrict this to the operator public IP during hardening.
+          sourceAddressPrefix: sshSourceAddressPrefix // Provided by the .azcli workflow at validation/deployment time.
           destinationAddressPrefix: '*'
         }
       }

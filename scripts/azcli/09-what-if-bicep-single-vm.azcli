@@ -1,21 +1,20 @@
 # VM Fleet Commander Lite
-# B2.E2 - Bicep single VM baseline
-# File: 07-deploy-bicep-single-vm.azcli
+# B2.E3 - Bicep hardening and operational polish
+# File: 09-what-if-bicep-single-vm.azcli
 #
 # Purpose:
-# - Deploy the modular Bicep single VM baseline.
+# - Preview Bicep changes with what-if before deployment.
 # - Read the local SSH public key at execution time.
 # - Pass adminPublicKey and sshSourceAddressPrefix as inline parameter overrides.
 #
 # Safety:
-# - This file creates Azure resources.
-# - Review subscription, Resource Group, and deployment parameters before execution.
-# - Do not leave the VM running after validation.
-# - End the session with SSH validation + deallocate.
+# - what-if previews changes.
+# - It does not deploy resources.
+# - Review output before running deployment.
 
 $RG_NAME = "rg-b2-vmfleet-dev-we-01"
 $LOCATION = "westeurope"
-$DEPLOYMENT_NAME = "b2-e2-bicep-single-vm"
+$DEPLOYMENT_NAME = "b2-e3-bicep-single-vm-whatif"
 $BICEP_FILE = "infra/main.bicep"
 $PARAMETERS_FILE = "infra/parameters/dev.bicepparam"
 $SSH_PUBLIC_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key.pub"
@@ -29,7 +28,6 @@ az account show --output table
 # -------------------------------------------------------------------
 # 2. Ensure the target Resource Group exists
 # -------------------------------------------------------------------
-# This creates only the Resource Group if it does not already exist.
 
 az group create `
   --name $RG_NAME `
@@ -58,11 +56,10 @@ $SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
 Write-Output "Resolved SSH source prefix: $SSH_SOURCE_ADDRESS_PREFIX"
 
 # -------------------------------------------------------------------
-# 6. Deploy the Bicep baseline
+# 6. Preview deployment changes (what-if)
 # -------------------------------------------------------------------
-# This creates the network resources and Linux VM.
 
-az deployment group create `
+az deployment group what-if `
   --resource-group $RG_NAME `
   --name $DEPLOYMENT_NAME `
   --template-file $BICEP_FILE `
@@ -70,13 +67,3 @@ az deployment group create `
   --parameters adminPublicKey="$ADMIN_PUBLIC_KEY" `
   --parameters sshSourceAddressPrefix="$SSH_SOURCE_ADDRESS_PREFIX" `
   --output table
-
-# -------------------------------------------------------------------
-# 7. Show deployment outputs
-# -------------------------------------------------------------------
-
-az deployment group show `
-  --resource-group $RG_NAME `
-  --name $DEPLOYMENT_NAME `
-  --query properties.outputs `
-  --output json

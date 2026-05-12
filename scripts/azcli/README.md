@@ -24,8 +24,12 @@ This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli
   - Deploys Bicep resources after validation succeeds.
 - `08-inspect-bicep-single-vm.azcli`
   - Inspects deployed Bicep resources and VM details post-deployment.
+- `09-what-if-bicep-single-vm.azcli`
+  - Previews Bicep changes with what-if before deployment (no resource deployment).
 
 
 ## Safety note
 
 Commands that create, modify, or delete Azure resources must be reviewed before execution.
+
+SSH access is restricted by passing `sshSourceAddressPrefix` with the operator public IP resolved at runtime in the `.azcli` workflow.
