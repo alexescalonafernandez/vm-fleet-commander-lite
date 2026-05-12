@@ -5,7 +5,7 @@
 # Purpose:
 # - Validate the modular Bicep single VM baseline before deployment.
 # - Read the local SSH public key at execution time.
-# - Pass adminPublicKey as an inline parameter override.
+# - Pass adminPublicKey and sshSourceAddressPrefix as inline parameter overrides.
 #
 # Safety:
 # - This file validates the deployment only.
@@ -48,8 +48,18 @@ Test-Path $SSH_PUBLIC_KEY_PATH
 
 $ADMIN_PUBLIC_KEY = Get-Content $SSH_PUBLIC_KEY_PATH -Raw
 
+
 # -------------------------------------------------------------------
-# 5. Validate the Bicep deployment
+# 5. Resolve operator public IP for SSH source restriction
+# -------------------------------------------------------------------
+
+$MY_PUBLIC_IP = Invoke-RestMethod -Uri "https://api.ipify.org"
+$SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
+
+Write-Output "Resolved SSH source prefix: $SSH_SOURCE_ADDRESS_PREFIX"
+
+# -------------------------------------------------------------------
+# 6. Validate the Bicep deployment
 # -------------------------------------------------------------------
 # This validates the deployment template and parameters.
 # It should not create Azure resources.
@@ -60,4 +70,5 @@ az deployment group validate `
   --template-file $BICEP_FILE `
   --parameters $PARAMETERS_FILE `
   --parameters adminPublicKey="$ADMIN_PUBLIC_KEY" `
+  --parameters sshSourceAddressPrefix="$SSH_SOURCE_ADDRESS_PREFIX" `
   --output table
