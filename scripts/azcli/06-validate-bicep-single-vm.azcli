@@ -1,5 +1,5 @@
 # VM Fleet Commander Lite
-# B2.E2 - Bicep single VM baseline
+# B2.E3 - Bicep hardening and operational polish
 # File: 06-validate-bicep-single-vm.azcli
 #
 # Purpose:
