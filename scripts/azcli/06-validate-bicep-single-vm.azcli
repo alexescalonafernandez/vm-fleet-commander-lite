@@ -5,7 +5,9 @@
 # Purpose:
 # - Validate the modular Bicep single VM baseline before deployment.
 # - Read the local SSH public key at execution time.
-# - Pass adminPublicKey and sshSourceAddressPrefix as inline parameter overrides.
+# - Pass adminPublicKey and sshSourceAddressPrefix as required inline runtime overrides.
+# - The versioned parameter file intentionally omits those two parameters (no placeholders).
+# - This prevents accidental deployment or validation with invalid placeholder values.
 #
 # Safety:
 # - This file validates the deployment only.
