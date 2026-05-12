@@ -43,7 +43,7 @@ Test-Path $SSH_PUBLIC_KEY_PATH
 # 4. Export runtime dynamic values for .bicepparam
 # -------------------------------------------------------------------
 
-$env:ADMIN_PUBLIC_KEY = Get-Content $SSH_PUBLIC_KEY_PATH -Raw
+$env:ADMIN_PUBLIC_KEY = (Get-Content $SSH_PUBLIC_KEY_PATH -Raw).Trim()
 $MY_PUBLIC_IP = Invoke-RestMethod -Uri "https://api.ipify.org"
 $env:SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
 
