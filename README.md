@@ -18,7 +18,9 @@ Build a small, reproducible Azure VM environment for learning:
 
 ## Current milestone
 
-- **B2.E0 - Project framing**
+- **B2.E0 - Project framing (completed)**
+- **B2.E1 - Manual VM baseline (completed)**
+- **B2.E2 - Bicep single VM baseline (completed)**
 
 ## Lite scope (in)
 

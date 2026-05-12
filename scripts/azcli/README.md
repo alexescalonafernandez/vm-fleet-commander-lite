@@ -1,6 +1,6 @@
 # Azure CLI scripts
 
-This folder contains the B2.E1 Azure CLI-first workflow using `.azcli` command files.
+This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli` command files.
 
 ## Current scripts
 
@@ -14,6 +14,17 @@ This folder contains the B2.E1 Azure CLI-first workflow using `.azcli` command f
   - Opens an SSH session to the VM and documents the basic Linux commands to run manually.
 - `04-vm-power-operations.azcli`
   - Handles VM power-state checks and deallocation verification.
+
+- `05-cleanup-manual-baseline-rg.azcli`
+  - Deletes the manual baseline Resource Group before Bicep validation/deployment.
+  - **Destructive**: review carefully before execution.
+- `06-validate-bicep-single-vm.azcli`
+  - Validates Bicep template and parameters only (no resource deployment).
+- `07-deploy-bicep-single-vm.azcli`
+  - Deploys Bicep resources after validation succeeds.
+- `08-inspect-bicep-single-vm.azcli`
+  - Inspects deployed Bicep resources and VM details post-deployment.
+
 
 ## Safety note
 
