@@ -40,4 +40,4 @@ Run the B2.E2 Bicep single-VM baseline in the following order:
 ## Notes
 
 - This milestone uses Azure CLI command files (`.azcli`) executed from VS Code/PowerShell 7.
-- Bicep is not used in B2.E1.
+- Bicep is intentionally not used in B2.E1; it is introduced in B2.E2.

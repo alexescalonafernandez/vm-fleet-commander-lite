@@ -27,7 +27,7 @@ This keeps the first Bicep milestone simple without locking the project into a s
 |---|---|
 | `infra/main.bicep` | Orchestrates module composition and parameters. |
 | `infra/modules/network.bicep` | Defines VNet, subnet, NSG, and related networking resources. |
-| `infra/modules/linux-vm.bicep` | Defines Linux VM, NIC, public IP, and VM settings. |
+| `infra/modules/linux-vm.bicep` | Defines the Linux VM and attaches the NIC produced by the network module. |
 | `infra/parameters/dev.bicepparam` | Development parameter baseline with placeholder SSH key value. |
 
 ## Resource summary
