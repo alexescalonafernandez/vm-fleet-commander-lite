@@ -15,6 +15,14 @@
 - Reminder: running VMs generate compute cost.
 - Managed disks and Public IP resources may still generate cost depending on configuration.
 
+
+## B2.E2 cost-control notes
+
+- Bicep deployment creates a real VM and can generate compute cost.
+- Final verified state for the B2.E2 run: `VM deallocated`.
+- Resource Group deletion remains a separate reviewed cleanup step.
+- Managed disks and Public IP may still have residual cost while the Resource Group exists.
+
 ## Session-end checklist
 
 - Verify VM power state.
