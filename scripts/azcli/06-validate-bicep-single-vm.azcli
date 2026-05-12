@@ -4,8 +4,8 @@
 #
 # Purpose:
 # - Validate the modular Bicep single VM baseline before deployment.
-# - Read the local SSH public key at execution time.
-# - Pass adminPublicKey and sshSourceAddressPrefix as inline parameter overrides.
+# - Read runtime dynamic values and export them as environment variables.
+# - Let .bicepparam resolve dynamic values via readEnvironmentVariable().
 #
 # Safety:
 # - This file validates the deployment only.
@@ -15,7 +15,6 @@
 $RG_NAME = "rg-b2-vmfleet-dev-we-01"
 $LOCATION = "westeurope"
 $DEPLOYMENT_NAME = "b2-e2-bicep-single-vm-validation"
-$BICEP_FILE = "infra/main.bicep"
 $PARAMETERS_FILE = "infra/parameters/dev.bicepparam"
 $SSH_PUBLIC_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key.pub"
 
@@ -43,32 +42,29 @@ az group create `
 Test-Path $SSH_PUBLIC_KEY_PATH
 
 # -------------------------------------------------------------------
-# 4. Read the local SSH public key content
+# 4. Export runtime dynamic values for .bicepparam
 # -------------------------------------------------------------------
 
-$ADMIN_PUBLIC_KEY = Get-Content $SSH_PUBLIC_KEY_PATH -Raw
-
-
-# -------------------------------------------------------------------
-# 5. Resolve operator public IP for SSH source restriction
-# -------------------------------------------------------------------
-
+$env:ADMIN_PUBLIC_KEY = Get-Content $SSH_PUBLIC_KEY_PATH -Raw
 $MY_PUBLIC_IP = Invoke-RestMethod -Uri "https://api.ipify.org"
-$SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
+$env:SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
 
-Write-Output "Resolved SSH source prefix: $SSH_SOURCE_ADDRESS_PREFIX"
+Write-Output "Resolved SSH source prefix: $env:SSH_SOURCE_ADDRESS_PREFIX"
 
 # -------------------------------------------------------------------
-# 6. Validate the Bicep deployment
+# 5. Validate the Bicep deployment
 # -------------------------------------------------------------------
-# This validates the deployment template and parameters.
-# It should not create Azure resources.
+# .bicepparam uses readEnvironmentVariable() to resolve dynamic values.
 
 az deployment group validate `
   --resource-group $RG_NAME `
   --name $DEPLOYMENT_NAME `
-  --template-file $BICEP_FILE `
   --parameters $PARAMETERS_FILE `
-  --parameters adminPublicKey="$ADMIN_PUBLIC_KEY" `
-  --parameters sshSourceAddressPrefix="$SSH_SOURCE_ADDRESS_PREFIX" `
   --output table
+
+# -------------------------------------------------------------------
+# 6. Clean up transient environment variables
+# -------------------------------------------------------------------
+
+Remove-Item Env:\ADMIN_PUBLIC_KEY -ErrorAction SilentlyContinue
+Remove-Item Env:\SSH_SOURCE_ADDRESS_PREFIX -ErrorAction SilentlyContinue
