@@ -1,0 +1,63 @@
+# VM Fleet Commander Lite
+# B2.E2 - Bicep single VM baseline
+# File: 06-validate-bicep-single-vm.azcli
+#
+# Purpose:
+# - Validate the modular Bicep single VM baseline before deployment.
+# - Read the local SSH public key at execution time.
+# - Pass adminPublicKey as an inline parameter override.
+#
+# Safety:
+# - This file validates the deployment only.
+# - It should not create Azure resources.
+# - It reads the local public SSH key, not the private key.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$LOCATION = "westeurope"
+$DEPLOYMENT_NAME = "b2-e2-bicep-single-vm-validation"
+$BICEP_FILE = "infra/main.bicep"
+$PARAMETERS_FILE = "infra/parameters/dev.bicepparam"
+$SSH_PUBLIC_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key.pub"
+
+# -------------------------------------------------------------------
+# 1. Confirm Azure subscription
+# -------------------------------------------------------------------
+
+az account show --output table
+
+# -------------------------------------------------------------------
+# 2. Ensure the target Resource Group exists
+# -------------------------------------------------------------------
+# The Bicep deployment is resource-group scoped.
+# This creates only the Resource Group, not the VM infrastructure.
+
+az group create `
+  --name $RG_NAME `
+  --location $LOCATION `
+  --output table
+
+# -------------------------------------------------------------------
+# 3. Confirm the local SSH public key exists
+# -------------------------------------------------------------------
+
+Test-Path $SSH_PUBLIC_KEY_PATH
+
+# -------------------------------------------------------------------
+# 4. Read the local SSH public key content
+# -------------------------------------------------------------------
+
+$ADMIN_PUBLIC_KEY = Get-Content $SSH_PUBLIC_KEY_PATH -Raw
+
+# -------------------------------------------------------------------
+# 5. Validate the Bicep deployment
+# -------------------------------------------------------------------
+# This validates the deployment template and parameters.
+# It should not create Azure resources.
+
+az deployment group validate `
+  --resource-group $RG_NAME `
+  --name $DEPLOYMENT_NAME `
+  --template-file $BICEP_FILE `
+  --parameters $PARAMETERS_FILE `
+  --parameters adminPublicKey="$ADMIN_PUBLIC_KEY" `
+  --output table

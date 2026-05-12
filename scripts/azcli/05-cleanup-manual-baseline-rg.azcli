@@ -1,0 +1,69 @@
+# VM Fleet Commander Lite
+# B2.E2 - Bicep single VM baseline
+# File: 05-cleanup-manual-baseline-rg.azcli
+#
+# Purpose:
+# - Delete the B2.E1 manual baseline Resource Group before starting the Bicep-managed baseline.
+# - Avoid mixing manually created resources with Bicep-managed resources.
+#
+# WARNING:
+# - This script is destructive.
+# - It deletes the entire Resource Group and all resources inside it.
+# - Review the target Resource Group carefully before executing the delete command.
+#
+# Expected target:
+# - Resource Group: rg-b2-vmfleet-dev-we-01
+#
+# Safety rule:
+# - Execute commands one by one.
+# - Inspect before delete.
+# - Verify after delete.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+
+# -------------------------------------------------------------------
+# 1. Confirm current Azure subscription
+# -------------------------------------------------------------------
+
+az account show --output table
+
+# -------------------------------------------------------------------
+# 2. Check whether the Resource Group exists
+# -------------------------------------------------------------------
+
+az group exists --name $RG_NAME
+
+# -------------------------------------------------------------------
+# 3. Inspect resources inside the Resource Group before deletion
+# -------------------------------------------------------------------
+# Expected from B2.E1:
+# - Linux VM baseline and related resources.
+# - VM should already be deallocated.
+
+az resource list `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 4. Delete the Resource Group
+# -------------------------------------------------------------------
+# DESTRUCTIVE COMMAND.
+# This removes the Resource Group and all contained resources.
+#
+# Execute only after reviewing:
+# - Subscription
+# - Resource Group name
+# - Listed resources
+
+az group delete `
+  --name $RG_NAME `
+  --yes `
+  --no-wait
+
+# -------------------------------------------------------------------
+# 5. Verify Resource Group deletion
+# -------------------------------------------------------------------
+# Because --no-wait returns immediately, this may return true for a while.
+# Re-run until it returns false.
+
+az group exists --name $RG_NAME
