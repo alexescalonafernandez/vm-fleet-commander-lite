@@ -1,0 +1,77 @@
+# VM Fleet Commander Lite
+# B2.E5 - Multi-VM Bicep loop baseline
+# File: 12-vm-fleet-power-operations.azcli
+#
+# Purpose:
+# - Operate the VM fleet safely during validation sessions.
+# - Start all VMs when needed.
+# - Deallocate all VMs at session end for cost control.
+#
+# Safety:
+# - This script performs VM power operations only.
+# - It does NOT delete the Resource Group.
+# - Run commands line by line from VS Code / PowerShell 7.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+
+# -------------------------------------------------------------------
+# 1. Confirm current Azure subscription context
+# -------------------------------------------------------------------
+
+az account show --output table
+
+# -------------------------------------------------------------------
+# 2. Collect VM names from the Resource Group
+# -------------------------------------------------------------------
+
+$VM_NAMES = az vm list --resource-group $RG_NAME --query "[].name" --output tsv
+
+# Optional visibility check.
+$VM_NAMES
+
+# -------------------------------------------------------------------
+# 3. Show current power state for all VMs
+# -------------------------------------------------------------------
+
+foreach ($VM_NAME in $VM_NAMES) {
+  az vm get-instance-view \
+    --resource-group $RG_NAME \
+    --name $VM_NAME \
+    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" \
+    --output table
+}
+
+# -------------------------------------------------------------------
+# 4. Start all VMs (run when fleet needs to be online)
+# -------------------------------------------------------------------
+
+foreach ($VM_NAME in $VM_NAMES) {
+  az vm start \
+    --resource-group $RG_NAME \
+    --name $VM_NAME \
+    --output table
+}
+
+# -------------------------------------------------------------------
+# 5. Deallocate all VMs (REQUIRED session-end cost-control step)
+# -------------------------------------------------------------------
+# Run this section at the end of each validation session.
+
+foreach ($VM_NAME in $VM_NAMES) {
+  az vm deallocate \
+    --resource-group $RG_NAME \
+    --name $VM_NAME \
+    --output table
+}
+
+# -------------------------------------------------------------------
+# 6. Final verification of power state for all VMs
+# -------------------------------------------------------------------
+
+foreach ($VM_NAME in $VM_NAMES) {
+  az vm get-instance-view \
+    --resource-group $RG_NAME \
+    --name $VM_NAME \
+    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" \
+    --output table
+}
