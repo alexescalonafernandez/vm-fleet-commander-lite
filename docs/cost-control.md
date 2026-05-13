@@ -31,6 +31,14 @@
 - SSH hardening improves exposure control but does not remove compute cost risk while a VM is running.
 - Session-end deallocate remains mandatory.
 
+
+## B2.E4 cost-control notes
+
+- Resource Group deletion removes lab resources when no longer needed.
+- Deletion is destructive and must be reviewed before execution.
+- If redeployed, the VM must still be deallocated after validation.
+- Final verified state: `VM deallocated`.
+
 ## Session-end checklist
 
 - Verify VM power state.
