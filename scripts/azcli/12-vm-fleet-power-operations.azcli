@@ -34,10 +34,10 @@ $VM_NAMES
 # -------------------------------------------------------------------
 
 foreach ($VM_NAME in $VM_NAMES) {
-  az vm get-instance-view \
-    --resource-group $RG_NAME \
-    --name $VM_NAME \
-    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" \
+  az vm get-instance-view `
+    --resource-group $RG_NAME `
+    --name $VM_NAME `
+    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" `
     --output table
 }
 
@@ -46,9 +46,9 @@ foreach ($VM_NAME in $VM_NAMES) {
 # -------------------------------------------------------------------
 
 foreach ($VM_NAME in $VM_NAMES) {
-  az vm start \
-    --resource-group $RG_NAME \
-    --name $VM_NAME \
+  az vm start `
+    --resource-group $RG_NAME `
+    --name $VM_NAME `
     --output table
 }
 
@@ -58,9 +58,9 @@ foreach ($VM_NAME in $VM_NAMES) {
 # Run this section at the end of each validation session.
 
 foreach ($VM_NAME in $VM_NAMES) {
-  az vm deallocate \
-    --resource-group $RG_NAME \
-    --name $VM_NAME \
+  az vm deallocate `
+    --resource-group $RG_NAME `
+    --name $VM_NAME `
     --output table
 }
 
@@ -69,9 +69,9 @@ foreach ($VM_NAME in $VM_NAMES) {
 # -------------------------------------------------------------------
 
 foreach ($VM_NAME in $VM_NAMES) {
-  az vm get-instance-view \
-    --resource-group $RG_NAME \
-    --name $VM_NAME \
-    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" \
+  az vm get-instance-view `
+    --resource-group $RG_NAME `
+    --name $VM_NAME `
+    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]}" `
     --output table
 }
