@@ -13,6 +13,9 @@ param adminUsername string
 @description('SSH public key content for Linux VM access.')
 param adminPublicKey string
 
+@description('Source CIDR allowed to SSH to the VM.')
+param sshSourceAddressPrefix string
+
 @description('Azure VM size.')
 param vmSize string
 
@@ -32,6 +35,7 @@ module network 'modules/network.bicep' = {
   name: 'networkDeployment'
   params: {
     location: location
+    sshSourceAddressPrefix: sshSourceAddressPrefix
   }
 }
 

@@ -1,6 +1,6 @@
 # Azure CLI scripts
 
-This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli` command files.
+This folder contains the B2.E1, B2.E2, and B2.E3 Azure CLI-first workflows using `.azcli` command files.
 
 ## Current scripts
 
@@ -24,8 +24,25 @@ This folder contains the B2.E1 and B2.E2 Azure CLI-first workflows using `.azcli
   - Deploys Bicep resources after validation succeeds.
 - `08-inspect-bicep-single-vm.azcli`
   - Inspects deployed Bicep resources and VM details post-deployment.
+- `09-what-if-bicep-single-vm.azcli`
+  - Previews Bicep changes with what-if before deployment (no resource deployment).
 
 
 ## Safety note
 
 Commands that create, modify, or delete Azure resources must be reviewed before execution.
+
+SSH access is restricted by passing `sshSourceAddressPrefix` with the operator public IP resolved at runtime in the `.azcli` workflow.
+
+
+## B2.E3 runtime parameter handling
+
+For B2.E3, `infra/parameters/dev.bicepparam` reads dynamic runtime values with `readEnvironmentVariable()` (for `ADMIN_PUBLIC_KEY` and `SSH_SOURCE_ADDRESS_PREFIX`).
+
+The `.azcli` scripts (`06`, `07`, and `09`) set transient environment variables immediately before validate/what-if/deploy operations and remove them afterward.
+
+`09-what-if-bicep-single-vm.azcli` is the required preview step to review infrastructure changes before deployment.
+
+The public key is normalized with `.Trim()` before export so `adminPublicKey` remains stable across incremental runs.
+
+This keeps real public SSH key content and operator public IP prefix values out of version control while preserving the same resource-group deployment scope.
