@@ -11,7 +11,7 @@
 # - Do not create, modify, or delete resources from this file.
 
 $RG_NAME = "rg-b2-vmfleet-dev-we-01"
-$DEPLOYMENT_NAME = "b2-e2-bicep-single-vm"
+$DEPLOYMENT_NAME = "b2-vm-fleet-baseline"
 $NSG_NAME = "nsg-vms-dev-we-01"
 
 # -------------------------------------------------------------------
@@ -25,26 +25,26 @@ az account show --output table
 # -------------------------------------------------------------------
 # Preferred quick fleet view including names, status, and IP fields.
 
-az vm list \
-  --resource-group $RG_NAME \
-  --show-details \
+az vm list `
+  --resource-group $RG_NAME `
+  --show-details `
   --output table
 
 # -------------------------------------------------------------------
 # 3. Show VM IP addressing details for the fleet
 # -------------------------------------------------------------------
 
-az vm list-ip-addresses \
-  --resource-group $RG_NAME \
+az vm list-ip-addresses `
+  --resource-group $RG_NAME `
   --output table
 
 # -------------------------------------------------------------------
 # 4. Show deployment outputs from the existing deployment
 # -------------------------------------------------------------------
 
-az deployment group show \
-  --resource-group $RG_NAME \
-  --name $DEPLOYMENT_NAME \
+az deployment group show `
+  --resource-group $RG_NAME `
+  --name $DEPLOYMENT_NAME `
   --query properties.outputs
 
 # -------------------------------------------------------------------
@@ -52,26 +52,26 @@ az deployment group show \
 # -------------------------------------------------------------------
 # Focus on TCP/22 inbound source access restrictions.
 
-az network nsg rule list \
-  --resource-group $RG_NAME \
-  --nsg-name $NSG_NAME \
-  --query "[?destinationPortRange=='22' && direction=='Inbound'].{Rule:name,Priority:priority,Access:access,Protocol:protocol,Source:sourceAddressPrefix,SourcePrefixes:sourceAddressPrefixes,Destination:destinationAddressPrefix}" \
+az network nsg rule list `
+  --resource-group $RG_NAME `
+  --nsg-name $NSG_NAME `
+  --query "[?destinationPortRange=='22' && direction=='Inbound'].{Rule:name,Priority:priority,Access:access,Protocol:protocol,Source:sourceAddressPrefix,SourcePrefixes:sourceAddressPrefixes,Destination:destinationAddressPrefix}" `
   --output table
 
 # -------------------------------------------------------------------
 # 6. List NIC resources and attached VM references
 # -------------------------------------------------------------------
 
-az network nic list \
-  --resource-group $RG_NAME \
-  --query "[].{NIC:name,PrivateIP:ipConfigurations[0].privateIPAddress,PublicIPRef:ipConfigurations[0].publicIPAddress.id,VMRef:virtualMachine.id,NSGRef:networkSecurityGroup.id}" \
+az network nic list `
+  --resource-group $RG_NAME `
+  --query "[].{NIC:name,PrivateIP:ipConfigurations[0].privateIPAddress,PublicIPRef:ipConfigurations[0].publicIPAddress.id,VMRef:virtualMachine.id,NSGRef:networkSecurityGroup.id}" `
   --output table
 
 # -------------------------------------------------------------------
 # 7. List Public IP resources
 # -------------------------------------------------------------------
 
-az network public-ip list \
-  --resource-group $RG_NAME \
-  --query "[].{PublicIP:name,IPAddress:ipAddress,Allocation:publicIPAllocationMethod,SKU:sku.name,DNS:dnsSettings.fqdn}" \
+az network public-ip list `
+  --resource-group $RG_NAME `
+  --query "[].{PublicIP:name,IPAddress:ipAddress,Allocation:publicIPAllocationMethod,SKU:sku.name,DNS:dnsSettings.fqdn}" `
   --output table
