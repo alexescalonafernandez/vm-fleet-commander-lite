@@ -23,6 +23,14 @@
 - Resource Group deletion remains a separate reviewed cleanup step.
 - Managed disks and Public IP may still have residual cost while the Resource Group exists.
 
+
+## B2.E3 cost-control notes
+
+- VM was deallocated after SSH validation.
+- Final verified state: `VM deallocated`.
+- SSH hardening improves exposure control but does not remove compute cost risk while a VM is running.
+- Session-end deallocate remains mandatory.
+
 ## Session-end checklist
 
 - Verify VM power state.

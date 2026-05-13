@@ -37,6 +37,27 @@ Run the B2.E2 Bicep single-VM baseline in the following order:
 6. Deallocate VM after SSH validation
    - `scripts/azcli/04-vm-power-operations.azcli`
 
+## B2.E3 hardened operational workflow
+
+Run the hardened workflow in this order:
+
+1. Validate
+   - `scripts/azcli/06-validate-bicep-single-vm.azcli`
+2. What-if (must be reviewed before deployment)
+   - `scripts/azcli/09-what-if-bicep-single-vm.azcli`
+3. Deploy (incremental)
+   - `scripts/azcli/07-deploy-bicep-single-vm.azcli`
+4. Inspect NSG/VM results
+   - `scripts/azcli/08-inspect-bicep-single-vm.azcli`
+5. Start VM if needed for SSH test
+   - `scripts/azcli/04-vm-power-operations.azcli`
+6. SSH validate
+   - `scripts/azcli/03-test-ssh-connectivity.azcli`
+7. Deallocate
+   - `scripts/azcli/04-vm-power-operations.azcli`
+8. Verify deallocated state
+   - `scripts/azcli/04-vm-power-operations.azcli`
+
 ## Notes
 
 - This milestone uses Azure CLI command files (`.azcli`) executed from VS Code/PowerShell 7.
