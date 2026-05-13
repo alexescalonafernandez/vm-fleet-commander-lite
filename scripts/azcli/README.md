@@ -39,6 +39,10 @@ SSH access is restricted by passing `sshSourceAddressPrefix` with the operator p
 
 For B2.E3, `infra/parameters/dev.bicepparam` reads dynamic runtime values with `readEnvironmentVariable()` (for `ADMIN_PUBLIC_KEY` and `SSH_SOURCE_ADDRESS_PREFIX`).
 
-The `.azcli` scripts (`06`, `07`, and `09`) set those environment variables immediately before validate/what-if/deploy operations, then remove them at the end of execution.
+The `.azcli` scripts (`06`, `07`, and `09`) set transient environment variables immediately before validate/what-if/deploy operations and remove them afterward.
+
+`09-what-if-bicep-single-vm.azcli` is the required preview step to review infrastructure changes before deployment.
+
+The public key is normalized with `.Trim()` before export so `adminPublicKey` remains stable across incremental runs.
 
 This keeps real public SSH key content and operator public IP prefix values out of version control while preserving the same resource-group deployment scope.
