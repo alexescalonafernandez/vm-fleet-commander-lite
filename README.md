@@ -22,6 +22,7 @@ Build a small, reproducible Azure VM environment for learning:
 - **B2.E1 - Manual VM baseline (completed)**
 - **B2.E2 - Bicep single VM baseline (completed)**
 - **B2.E3 - Bicep hardening and operational polish (completed)**
+- **B2.E4 - Lifecycle cleanup and redeploy validation (completed)**
 
 ## Lite scope (in)
 
