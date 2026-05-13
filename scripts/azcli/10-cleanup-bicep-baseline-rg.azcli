@@ -1,0 +1,107 @@
+# VM Fleet Commander Lite
+# B2.E4 - Cleanup, redeploy and lifecycle operations
+# File: 10-cleanup-bicep-baseline-rg.azcli
+#
+# Purpose:
+# - Delete the Bicep-created Resource Group in a controlled way.
+# - Prepare for a clean redeploy from scratch.
+#
+# WARNING:
+# - This script is destructive.
+# - It deletes the entire Resource Group and all resources inside it.
+# - Review the subscription, Resource Group name, and resource list before executing the delete command.
+#
+# Execution model:
+# - Run commands one by one from VS Code / PowerShell 7.
+# - Do not execute the delete step until the inspection output has been reviewed.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$VM_NAME = "vm-b2-linux-01"
+
+# -------------------------------------------------------------------
+# 1. Confirm current Azure subscription
+# -------------------------------------------------------------------
+
+az account show --output table
+
+# -------------------------------------------------------------------
+# 2. Check whether the Resource Group exists
+# -------------------------------------------------------------------
+
+az group exists --name $RG_NAME
+
+# -------------------------------------------------------------------
+# 3. Inspect resources inside the Resource Group before deletion
+# -------------------------------------------------------------------
+# Review this output carefully before deleting anything.
+
+az resource list `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 4. Check current VM power state if the VM exists
+# -------------------------------------------------------------------
+# If the Resource Group or VM no longer exists, this command may fail.
+# That is acceptable during cleanup troubleshooting.
+
+az vm get-instance-view `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" `
+  --output tsv
+
+# -------------------------------------------------------------------
+# 5. Deallocate VM before deleting Resource Group if needed
+# -------------------------------------------------------------------
+# Run this only if the VM exists and is not already deallocated.
+# This is a cost-control and safe-shutdown step before destructive cleanup.
+
+az vm deallocate `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 6. Verify VM deallocated state
+# -------------------------------------------------------------------
+
+az vm get-instance-view `
+  --resource-group $RG_NAME `
+  --name $VM_NAME `
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" `
+  --output tsv
+
+# -------------------------------------------------------------------
+# 7. Delete the Resource Group
+# -------------------------------------------------------------------
+# DESTRUCTIVE COMMAND.
+#
+# This removes:
+# - VM
+# - OS disk
+# - NIC
+# - Public IP
+# - NSG
+# - Subnet
+# - VNet
+# - Deployment history in this Resource Group
+#
+# Execute only after reviewing:
+# - Subscription
+# - Resource Group name
+# - Resource list
+# - VM state
+
+az group delete `
+  --name $RG_NAME `
+  --yes `
+  --no-wait
+
+# -------------------------------------------------------------------
+# 8. Verify Resource Group deletion
+# -------------------------------------------------------------------
+# Because --no-wait returns immediately, this may return true for a while.
+# Re-run until it returns false.
+
+az group exists --name $RG_NAME
