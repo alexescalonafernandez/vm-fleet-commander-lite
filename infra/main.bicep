@@ -42,7 +42,7 @@ module network 'modules/network.bicep' = {
   }
 }
 
-module linuxVmFleet 'modules/linux-vm.bicep' = {
+module linuxVmFleet 'modules/linux-vm-fleet.bicep' = {
   name: 'linuxVmFleetDeployment'
   params: {
     location: location
