@@ -34,7 +34,7 @@ var vmNames = [for i in vmIndexes: 'vm-b2-linux-${padLeft(string(i + 1), 2, '0')
 var nicNames = [for vmName in vmNames: 'nic-${vmName}']
 var publicIpNames = [for vmName in vmNames: 'pip-${vmName}']
 
-resource publicIps 'Microsoft.Network/publicIPAddresses@2023-11-01' = [for (i, vmName) in vmNames: {
+resource publicIps 'Microsoft.Network/publicIPAddresses@2023-11-01' = [for (vmName, i) in vmNames: {
   name: publicIpNames[i]
   location: location
   sku: {
@@ -45,7 +45,7 @@ resource publicIps 'Microsoft.Network/publicIPAddresses@2023-11-01' = [for (i, v
   }
 }]
 
-resource nics 'Microsoft.Network/networkInterfaces@2023-11-01' = [for (i, vmName) in vmNames: {
+resource nics 'Microsoft.Network/networkInterfaces@2023-11-01' = [for (vmName, i) in vmNames: {
   name: nicNames[i]
   location: location
   properties: {
@@ -66,7 +66,7 @@ resource nics 'Microsoft.Network/networkInterfaces@2023-11-01' = [for (i, vmName
   }
 }]
 
-resource linuxVms 'Microsoft.Compute/virtualMachines@2023-09-01' = [for (i, vmName) in vmNames: {
+resource linuxVms 'Microsoft.Compute/virtualMachines@2023-09-01' = [for (vmName, i) in vmNames: {
   name: vmName
   location: location
   properties: {
@@ -115,7 +115,7 @@ resource linuxVms 'Microsoft.Compute/virtualMachines@2023-09-01' = [for (i, vmNa
   }
 }]
 
-output vmNames array = [for vm in linuxVms: vm.name]
-output nicNames array = [for nic in nics: nic.name]
-output publicIpResourceNames array = [for pip in publicIps: pip.name]
-output publicIpAddresses array = [for pip in publicIps: pip.properties.ipAddress]
+output vmNames array = [for i in vmIndexes: linuxVms[i].name]
+output nicNames array = [for i in vmIndexes: nics[i].name]
+output publicIpResourceNames array = [for i in vmIndexes: publicIps[i].name]
+output publicIpAddresses array = [for i in vmIndexes: publicIps[i].properties.ipAddress]
