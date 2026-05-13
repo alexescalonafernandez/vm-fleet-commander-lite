@@ -5,6 +5,7 @@ param workloadName = 'b2-vmfleet'
 param environmentName = 'dev'
 param adminUsername = 'azureuser'
 param vmSize = 'Standard_B1s'
+param vmCount = 2
 
 // Runtime value is provided by the local .azcli workflow via environment variable.
 // The real SSH public key content is not hardcoded in version control.
