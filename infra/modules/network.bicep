@@ -49,41 +49,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
   }
 }
 
-resource publicIp 'Microsoft.Network/publicIPAddresses@2023-11-01' = {
-  name: 'pip-vm-b2-linux-01'
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-  }
-}
-
-resource nic 'Microsoft.Network/networkInterfaces@2023-11-01' = {
-  name: 'nic-vm-b2-linux-01'
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          subnet: {
-            id: subnet.id
-          }
-          privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: publicIp.id
-          }
-        }
-      }
-    ]
-  }
-}
-
-output nicId string = nic.id
-output publicIpName string = publicIp.name
-output publicIpAddress string = publicIp.properties.ipAddress
+output subnetId string = subnet.id
 output vnetName string = vnet.name
 output subnetName string = subnet.name
 output nsgName string = nsg.name

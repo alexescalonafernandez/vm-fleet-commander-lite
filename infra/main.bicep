@@ -19,6 +19,9 @@ param sshSourceAddressPrefix string
 @description('Azure VM size.')
 param vmSize string
 
+@description('Number of VMs to create in the fleet.')
+param vmCount int
+
 @description('Ubuntu image publisher.')
 param imagePublisher string = 'Canonical'
 
@@ -39,14 +42,15 @@ module network 'modules/network.bicep' = {
   }
 }
 
-module linuxVm 'modules/linux-vm.bicep' = {
-  name: 'linuxVmDeployment'
+module linuxVmFleet 'modules/linux-vm.bicep' = {
+  name: 'linuxVmFleetDeployment'
   params: {
     location: location
+    vmCount: vmCount
+    subnetId: network.outputs.subnetId
     vmSize: vmSize
     adminUsername: adminUsername
     adminPublicKey: adminPublicKey
-    networkInterfaceId: network.outputs.nicId
     imagePublisher: imagePublisher
     imageOffer: imageOffer
     imageSku: imageSku
@@ -54,9 +58,10 @@ module linuxVm 'modules/linux-vm.bicep' = {
   }
 }
 
-output vmName string = linuxVm.outputs.vmName
-output publicIpResourceName string = network.outputs.publicIpName
-output publicIpAddress string = network.outputs.publicIpAddress
+output vmNames array = linuxVmFleet.outputs.vmNames
+output publicIpResourceNames array = linuxVmFleet.outputs.publicIpResourceNames
+output publicIpAddresses array = linuxVmFleet.outputs.publicIpAddresses
+output nicNames array = linuxVmFleet.outputs.nicNames
 output vnetName string = network.outputs.vnetName
 output subnetName string = network.outputs.subnetName
 output nsgName string = network.outputs.nsgName
