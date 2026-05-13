@@ -1,20 +1,20 @@
 # VM Fleet Commander Lite
-# B2.E3 - Bicep hardening and operational polish
-# File: 09-what-if-bicep-single-vm.azcli
+# B2.E5 - Multi-VM Bicep loop baseline
+# File: 06-validate-bicep-vm-fleet.azcli
 #
 # Purpose:
-# - Preview Bicep changes with what-if before deployment.
+# - Validate the VM fleet baseline before deployment.
 # - Read runtime dynamic values and export them as environment variables.
 # - Let .bicepparam resolve dynamic values via readEnvironmentVariable().
 #
 # Safety:
-# - what-if previews changes.
-# - It does not deploy resources.
-# - Review output before running deployment.
+# - This file validates the deployment only.
+# - It should not create Azure resources.
+# - It reads the local public SSH key, not the private key.
 
 $RG_NAME = "rg-b2-vmfleet-dev-we-01"
 $LOCATION = "westeurope"
-$DEPLOYMENT_NAME = "b2-e3-bicep-single-vm-whatif"
+$DEPLOYMENT_NAME = "b2-vm-fleet-baseline-validation"
 $PARAMETERS_FILE = "infra/parameters/dev.bicepparam"
 $SSH_PUBLIC_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key.pub"
 
@@ -27,6 +27,8 @@ az account show --output table
 # -------------------------------------------------------------------
 # 2. Ensure the target Resource Group exists
 # -------------------------------------------------------------------
+# The Bicep deployment is resource-group scoped.
+# This creates only the Resource Group, not the VM infrastructure.
 
 az group create `
   --name $RG_NAME `
@@ -50,11 +52,11 @@ $env:SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
 Write-Output "Resolved SSH source prefix: $env:SSH_SOURCE_ADDRESS_PREFIX"
 
 # -------------------------------------------------------------------
-# 5. Preview deployment changes (what-if)
+# 5. Validate the Bicep deployment
 # -------------------------------------------------------------------
 # .bicepparam uses readEnvironmentVariable() to resolve dynamic values.
 
-az deployment group what-if `
+az deployment group validate `
   --resource-group $RG_NAME `
   --name $DEPLOYMENT_NAME `
   --parameters $PARAMETERS_FILE `
