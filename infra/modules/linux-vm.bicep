@@ -1,5 +1,11 @@
-@description('Azure region for the virtual machine.')
+@description('Azure region for virtual machine resources.')
 param location string
+
+@description('Number of VMs to create in the fleet.')
+param vmCount int
+
+@description('Subnet resource ID where VM NICs will be attached.')
+param subnetId string
 
 @description('VM size (for example: Standard_B1s).')
 param vmSize string
@@ -10,9 +16,6 @@ param adminUsername string
 @secure()
 @description('SSH public key content for the admin user.')
 param adminPublicKey string
-
-@description('Existing network interface resource ID to attach to the VM.')
-param networkInterfaceId string
 
 @description('Image publisher.')
 param imagePublisher string
@@ -26,15 +29,52 @@ param imageSku string
 @description('Image version.')
 param imageVersion string
 
-resource linuxVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
-  name: 'vm-b2-linux-01'
+var vmIndexes = range(0, vmCount)
+var vmNames = [for i in vmIndexes: 'vm-b2-linux-${padLeft(string(i + 1), 2, '0')}']
+var nicNames = [for vmName in vmNames: 'nic-${vmName}']
+var publicIpNames = [for vmName in vmNames: 'pip-${vmName}']
+
+resource publicIps 'Microsoft.Network/publicIPAddresses@2023-11-01' = [for (i, vmName) in vmNames: {
+  name: publicIpNames[i]
+  location: location
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }
+}]
+
+resource nics 'Microsoft.Network/networkInterfaces@2023-11-01' = [for (i, vmName) in vmNames: {
+  name: nicNames[i]
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: subnetId
+          }
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: publicIps[i].id
+          }
+        }
+      }
+    ]
+  }
+}]
+
+resource linuxVms 'Microsoft.Compute/virtualMachines@2023-09-01' = [for (i, vmName) in vmNames: {
+  name: vmName
   location: location
   properties: {
     hardwareProfile: {
       vmSize: vmSize
     }
     osProfile: {
-      computerName: 'vm-b2-linux-01'
+      computerName: vmName
       adminUsername: adminUsername
       linuxConfiguration: {
         disablePasswordAuthentication: true
@@ -65,7 +105,7 @@ resource linuxVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     networkProfile: {
       networkInterfaces: [
         {
-          id: networkInterfaceId
+          id: nics[i].id
           properties: {
             primary: true
           }
@@ -73,7 +113,9 @@ resource linuxVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
       ]
     }
   }
-}
+}]
 
-output vmName string = linuxVm.name
-output vmId string = linuxVm.id
+output vmNames array = [for vm in linuxVms: vm.name]
+output nicNames array = [for nic in nics: nic.name]
+output publicIpResourceNames array = [for pip in publicIps: pip.name]
+output publicIpAddresses array = [for pip in publicIps: pip.properties.ipAddress]
