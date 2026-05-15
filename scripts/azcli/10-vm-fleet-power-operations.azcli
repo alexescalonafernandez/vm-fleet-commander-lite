@@ -1,6 +1,6 @@
 # VM Fleet Commander Lite
 # B2.E5 - Multi-VM Bicep loop baseline
-# File: 12-vm-fleet-power-operations.azcli
+# File: 10-vm-fleet-power-operations.azcli
 #
 # Purpose:
 # - Operate the VM fleet safely during validation sessions.
