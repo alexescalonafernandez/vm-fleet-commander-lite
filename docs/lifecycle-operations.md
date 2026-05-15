@@ -25,7 +25,7 @@ This reduces drift risk and confirms reproducibility for upcoming fleet-level op
 | 4 | Review what-if | `scripts/azcli/07-what-if-bicep-vm-fleet.azcli` |
 | 5 | Deploy from scratch | `scripts/azcli/08-deploy-bicep-vm-fleet.azcli` |
 | 6 | Inspect deployment | `scripts/azcli/09-inspect-vm-fleet.azcli` |
-| 7 | SSH / power operations | `scripts/azcli/10-vm-fleet-power-operations.azcli` |
+| 7 | Fleet power operations | `scripts/azcli/10-vm-fleet-power-operations.azcli` |
 | 8 | Deallocate VM fleet | `scripts/azcli/10-vm-fleet-power-operations.azcli` |
 
 ## Cleanup script summary
@@ -44,10 +44,17 @@ After deletion verification, the hardened baseline was recreated using the exist
 2. What-if (`07`)
 3. Deploy (`08`)
 4. Inspect (`09`)
-5. SSH / power operations (`10`)
+5. Fleet power operations (`10`)
 6. Deallocate (`10`)
 
 ## Operational evidence
+
+## SSH validation note
+
+`10-vm-fleet-power-operations.azcli` does **not** perform SSH validation.
+
+When SSH validation is required, perform it manually (or run `scripts/azcli/03-test-ssh-connectivity.azcli`) against at least one VM public IP discovered during fleet inspection (`scripts/azcli/09-inspect-vm-fleet.azcli`).
+
 
 - Baseline Resource Group deletion completed successfully.
 - Deletion was verified before redeployment.
