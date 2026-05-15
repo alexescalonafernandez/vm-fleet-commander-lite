@@ -27,7 +27,7 @@ This folder contains the B2.E1, B2.E2, and B2.E3 Azure CLI-first workflows using
 - `09-what-if-bicep-single-vm.azcli`
   - Previews Bicep changes with what-if before deployment (no resource deployment).
 
-- `10-cleanup-bicep-baseline-rg.azcli`
+- `11-cleanup-bicep-baseline-rg.azcli`
   - Deletes the Bicep baseline Resource Group for B2.E4 lifecycle cleanup before redeploy-from-scratch validation.
   - **Destructive**: review carefully before execution.
 

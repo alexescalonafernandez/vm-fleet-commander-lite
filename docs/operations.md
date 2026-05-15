@@ -64,9 +64,9 @@ Run the hardened workflow in this order:
 Run the B2.E4 lifecycle flow in this order:
 
 1. Cleanup Bicep baseline Resource Group (destructive)
-   - `scripts/azcli/10-cleanup-bicep-baseline-rg.azcli`
+   - `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli`
 2. Verify Resource Group deletion
-   - `scripts/azcli/10-cleanup-bicep-baseline-rg.azcli`
+   - `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli`
 3. Validate Bicep template
    - `scripts/azcli/06-validate-bicep-single-vm.azcli`
 4. What-if review (required safety gate)

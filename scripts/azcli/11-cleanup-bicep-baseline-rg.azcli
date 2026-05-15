@@ -1,6 +1,6 @@
 # VM Fleet Commander Lite
 # B2.E4 - Cleanup, redeploy and lifecycle operations
-# File: 10-cleanup-bicep-baseline-rg.azcli
+# File: 11-cleanup-bicep-baseline-rg.azcli
 #
 # Purpose:
 # - Delete the Bicep-created Resource Group in a controlled way.

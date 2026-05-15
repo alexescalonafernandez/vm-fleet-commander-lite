@@ -1,6 +1,6 @@
 # VM Fleet Commander Lite
 # B2.E5 - Multi-VM Bicep loop baseline
-# File: 11-inspect-vm-fleet.azcli
+# File: 09-inspect-vm-fleet.azcli
 #
 # Purpose:
 # - Inspect the VM fleet created by the Bicep loop baseline.
