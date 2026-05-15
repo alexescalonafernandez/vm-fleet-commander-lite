@@ -1,20 +1,21 @@
 # VM Fleet Commander Lite
 # B2.E5 - Multi-VM Bicep loop baseline
-# File: 09-what-if-bicep-vm-fleet.azcli
+# File: 08-deploy-bicep-vm-fleet.azcli
 #
 # Purpose:
-# - Preview Bicep changes with what-if before deployment.
+# - Deploy the VM fleet baseline.
 # - Read runtime dynamic values and export them as environment variables.
 # - Let .bicepparam resolve dynamic values via readEnvironmentVariable().
 #
 # Safety:
-# - what-if previews changes.
-# - It does not deploy resources.
-# - Review output before running deployment.
+# - This file creates Azure resources.
+# - Review subscription, Resource Group, and deployment parameters before execution.
+# - Do not leave the VM running after validation.
+# - End the session with SSH validation + deallocate.
 
 $RG_NAME = "rg-b2-vmfleet-dev-we-01"
 $LOCATION = "westeurope"
-$DEPLOYMENT_NAME = "b2-vm-fleet-baseline-whatif"
+$DEPLOYMENT_NAME = "b2-vm-fleet-baseline"
 $PARAMETERS_FILE = "infra/parameters/dev.bicepparam"
 $SSH_PUBLIC_KEY_PATH = "$HOME\.ssh\vm-b2-linux-01_key.pub"
 
@@ -27,6 +28,7 @@ az account show --output table
 # -------------------------------------------------------------------
 # 2. Ensure the target Resource Group exists
 # -------------------------------------------------------------------
+# This creates only the Resource Group if it does not already exist.
 
 az group create `
   --name $RG_NAME `
@@ -50,18 +52,28 @@ $env:SSH_SOURCE_ADDRESS_PREFIX = "$MY_PUBLIC_IP/32"
 Write-Output "Resolved SSH source prefix: $env:SSH_SOURCE_ADDRESS_PREFIX"
 
 # -------------------------------------------------------------------
-# 5. Preview deployment changes (what-if)
+# 5. Deploy the Bicep baseline
 # -------------------------------------------------------------------
 # .bicepparam uses readEnvironmentVariable() to resolve dynamic values.
 
-az deployment group what-if `
+az deployment group create `
   --resource-group $RG_NAME `
   --name $DEPLOYMENT_NAME `
   --parameters $PARAMETERS_FILE `
   --output table
 
 # -------------------------------------------------------------------
-# 6. Clean up transient environment variables
+# 6. Show deployment outputs
+# -------------------------------------------------------------------
+
+az deployment group show `
+  --resource-group $RG_NAME `
+  --name $DEPLOYMENT_NAME `
+  --query properties.outputs `
+  --output json
+
+# -------------------------------------------------------------------
+# 7. Clean up transient environment variables
 # -------------------------------------------------------------------
 
 Remove-Item Env:\ADMIN_PUBLIC_KEY -ErrorAction SilentlyContinue

@@ -19,8 +19,8 @@ This reduces drift risk and confirms reproducibility for upcoming fleet-level op
 
 | Step | Action | Script |
 |---|---|---|
-| 1 | Cleanup baseline Resource Group | `scripts/azcli/10-cleanup-bicep-baseline-rg.azcli` |
-| 2 | Verify deletion | `scripts/azcli/10-cleanup-bicep-baseline-rg.azcli` |
+| 1 | Cleanup baseline Resource Group | `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli` |
+| 2 | Verify deletion | `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli` |
 | 3 | Validate template | `scripts/azcli/06-validate-bicep-single-vm.azcli` |
 | 4 | Review what-if | `scripts/azcli/09-what-if-bicep-single-vm.azcli` |
 | 5 | Deploy from scratch | `scripts/azcli/07-deploy-bicep-single-vm.azcli` |
@@ -30,7 +30,7 @@ This reduces drift risk and confirms reproducibility for upcoming fleet-level op
 
 ## Cleanup script summary
 
-`10-cleanup-bicep-baseline-rg.azcli` covers three controls:
+`11-cleanup-bicep-baseline-rg.azcli` covers three controls:
 
 - **Target Resource Group:** `rg-b2-vmfleet-dev-we-01`.
 - **Review before delete:** explicit destructive step review before execution.
