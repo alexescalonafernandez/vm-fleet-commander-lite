@@ -6,7 +6,7 @@ B2.E4 validates full lifecycle operations for the hardened Bicep baseline: clean
 
 ## Why this matters before multi-VM fleet support
 
-Before expanding to multi-VM scenarios, the single-VM baseline must prove it can be safely:
+As the repository evolved to a VM fleet baseline, the lifecycle flow remains the same and must still prove resources can be safely:
 
 - Removed without leftovers.
 - Recreated from scratch with the same workflow.
@@ -21,12 +21,12 @@ This reduces drift risk and confirms reproducibility for upcoming fleet-level op
 |---|---|---|
 | 1 | Cleanup baseline Resource Group | `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli` |
 | 2 | Verify deletion | `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli` |
-| 3 | Validate template | `scripts/azcli/06-validate-bicep-single-vm.azcli` |
-| 4 | Review what-if | `scripts/azcli/09-what-if-bicep-single-vm.azcli` |
-| 5 | Deploy from scratch | `scripts/azcli/07-deploy-bicep-single-vm.azcli` |
-| 6 | Inspect deployment | `scripts/azcli/08-inspect-bicep-single-vm.azcli` |
-| 7 | Validate SSH | `scripts/azcli/03-test-ssh-connectivity.azcli` |
-| 8 | Deallocate VM | `scripts/azcli/04-vm-power-operations.azcli` |
+| 3 | Validate template | `scripts/azcli/06-validate-bicep-vm-fleet.azcli` |
+| 4 | Review what-if | `scripts/azcli/07-what-if-bicep-vm-fleet.azcli` |
+| 5 | Deploy from scratch | `scripts/azcli/08-deploy-bicep-vm-fleet.azcli` |
+| 6 | Inspect deployment | `scripts/azcli/09-inspect-vm-fleet.azcli` |
+| 7 | SSH / power operations | `scripts/azcli/10-vm-fleet-power-operations.azcli` |
+| 8 | Deallocate VM fleet | `scripts/azcli/10-vm-fleet-power-operations.azcli` |
 
 ## Cleanup script summary
 
@@ -41,11 +41,11 @@ This reduces drift risk and confirms reproducibility for upcoming fleet-level op
 After deletion verification, the hardened baseline was recreated using the existing B2.E3 workflow:
 
 1. Validate (`06`)
-2. What-if (`09`)
-3. Deploy (`07`)
-4. Inspect (`08`)
-5. SSH validation (`03`)
-6. Deallocate (`04`)
+2. What-if (`07`)
+3. Deploy (`08`)
+4. Inspect (`09`)
+5. SSH / power operations (`10`)
+6. Deallocate (`10`)
 
 ## Operational evidence
 
