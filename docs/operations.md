@@ -22,42 +22,19 @@ Run the B2.E1 manual VM baseline in the following order:
 
 ## B2.E2 operational workflow (historical milestone)
 
-Run the B2.E2 Bicep single-VM baseline in the following order:
+B2.E2 (Bicep single-VM baseline) is preserved in Git history and tag `v0.3-bicep-single-vm`.
 
-1. Cleanup manual baseline Resource Group (destructive)
-   - `scripts/azcli/05-cleanup-manual-baseline-rg.azcli`
-2. Validate Bicep template (pre-deployment validation)
-   - `scripts/azcli/06-validate-bicep-vm-fleet.azcli`
-3. Deploy Bicep template (only after validation succeeds)
-   - `scripts/azcli/08-deploy-bicep-vm-fleet.azcli`
-4. Inspect deployed resources (post-deployment verification)
-   - `scripts/azcli/09-inspect-vm-fleet.azcli`
-5. Validate SSH connectivity
-   - `scripts/azcli/03-test-ssh-connectivity.azcli`
-6. Deallocate VM after SSH validation
-   - `scripts/azcli/04-vm-power-operations.azcli`
+The current repository has evolved to the VM fleet workflow.
+
+For current execution, use the **B2.E5 active VM fleet workflow** section in this document.
 
 ## B2.E3 hardened operational workflow (historical milestone)
 
-Run the hardened workflow in this order:
+B2.E3 (single-VM hardening workflow) is preserved in Git history and tag `v0.4-bicep-hardening`.
 
-1. Validate
-   - `scripts/azcli/06-validate-bicep-vm-fleet.azcli`
-2. What-if (must be reviewed before deployment)
-   - `scripts/azcli/07-what-if-bicep-vm-fleet.azcli`
-3. Deploy (incremental)
-   - `scripts/azcli/08-deploy-bicep-vm-fleet.azcli`
-4. Inspect NSG/VM results
-   - `scripts/azcli/09-inspect-vm-fleet.azcli`
-5. Start VM if needed for SSH test
-   - `scripts/azcli/04-vm-power-operations.azcli`
-6. SSH validate
-   - `scripts/azcli/03-test-ssh-connectivity.azcli`
-7. Deallocate
-   - `scripts/azcli/04-vm-power-operations.azcli`
-8. Verify deallocated state
-   - `scripts/azcli/04-vm-power-operations.azcli`
+The current repository has evolved to the VM fleet workflow.
 
+For current execution, use the **B2.E5 active VM fleet workflow** section in this document.
 
 ## B2.E4 lifecycle workflow (updated for current fleet scripts)
 
@@ -107,4 +84,4 @@ Use the active Bicep VM fleet workflow in this order:
 6. Cleanup baseline Resource Group when finished (destructive)
    - `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli`
 
-Historical B2.E2 and B2.E3 sections above capture milestone context and may reference workflow semantics from earlier tags, while script names here match the current repository state.
+Historical B2.E2 and B2.E3 sections above are preserved for milestone context and point to the relevant tags. For current execution in this repository, follow the B2.E5 workflow above.
