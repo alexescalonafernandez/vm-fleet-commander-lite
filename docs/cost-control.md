@@ -39,6 +39,15 @@
 - If redeployed, the VM must still be deallocated after validation.
 - Final verified state: `VM deallocated`.
 
+
+
+## B2.E5 cost-control notes
+
+- Multi-VM deployment increases compute cost risk versus single-VM runs.
+- All VMs must be deallocated after validation and operational checks.
+- Final verified state: `VM deallocated`.
+- Resource Group cleanup remains available through `11-cleanup-bicep-baseline-rg.azcli`.
+
 ## Session-end checklist
 
 - Verify VM power state.
