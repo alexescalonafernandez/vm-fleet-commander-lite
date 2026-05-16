@@ -1,0 +1,144 @@
+# VM Fleet Commander Lite
+# B2.E6 - Fleet observability and operational diagnostics
+# File: 12-fleet-observability.azcli
+#
+# Purpose:
+# - Inspect current VM fleet state and operational diagnostics signals.
+#
+# Safety:
+# - READ-ONLY script.
+# - Do not create, modify, deallocate, or delete resources from this file.
+
+$RG_NAME = "rg-b2-vmfleet-dev-we-01"
+$DEPLOYMENT_NAME = "b2-vm-fleet-baseline"
+$NSG_NAME = "nsg-vms-dev-we-01"
+
+# -------------------------------------------------------------------
+# 1. Confirm Azure subscription context
+# -------------------------------------------------------------------
+
+az account show --output table
+
+# -------------------------------------------------------------------
+# 2. Inspect Resource Group existence and resources
+# -------------------------------------------------------------------
+
+az group exists --name $RG_NAME
+
+az resource list `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 3. Inspect deployment state and outputs
+# -------------------------------------------------------------------
+
+az deployment group show `
+  --resource-group $RG_NAME `
+  --name $DEPLOYMENT_NAME `
+  --output table
+
+az deployment group show `
+  --resource-group $RG_NAME `
+  --name $DEPLOYMENT_NAME `
+  --query properties.outputs `
+  --output json
+
+# -------------------------------------------------------------------
+# 4. Inspect fleet VM state
+# -------------------------------------------------------------------
+
+az vm list `
+  --resource-group $RG_NAME `
+  --show-details `
+  --output table
+
+$VM_NAMES = az vm list `
+  --resource-group $RG_NAME `
+  --query "[].name" `
+  --output tsv
+
+foreach ($VM_NAME in $VM_NAMES) {
+  az vm get-instance-view `
+    --resource-group $RG_NAME `
+    --name $VM_NAME `
+    --query "{VM:name,PowerState:instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0],ProvisioningState:provisioningState,Location:location}" `
+    --output table
+}
+
+# -------------------------------------------------------------------
+# 5. Inspect VM IP addressing
+# -------------------------------------------------------------------
+
+az vm list-ip-addresses `
+  --resource-group $RG_NAME `
+  --output table
+
+# -------------------------------------------------------------------
+# 6. Inspect NICs
+# -------------------------------------------------------------------
+
+az network nic list `
+  --resource-group $RG_NAME `
+  --query "[].{NIC:name,PrivateIP:ipConfigurations[0].privateIPAddress,PublicIPRef:ipConfigurations[0].publicIPAddress.id,VMRef:virtualMachine.id}" `
+  --output table
+
+# -------------------------------------------------------------------
+# 7. Inspect Public IP resources
+# -------------------------------------------------------------------
+
+az network public-ip list `
+  --resource-group $RG_NAME `
+  --query "[].{Name:name,IPAddress:ipAddress,Allocation:publicIPAllocationMethod,SKU:sku.name}" `
+  --output table
+
+# -------------------------------------------------------------------
+# 8. Inspect NSG SSH rule (TCP/22 inbound)
+# -------------------------------------------------------------------
+
+az network nsg rule list `
+  --resource-group $RG_NAME `
+  --nsg-name $NSG_NAME `
+  --query "[?direction=='Inbound' && protocol=='Tcp' && destinationPortRange=='22'].{Name:name,Priority:priority,Access:access,Protocol:protocol,SourceAddressPrefix:sourceAddressPrefix,DestinationPort:destinationPortRange}" `
+  --output table
+
+# -------------------------------------------------------------------
+# 9. Inspect recent Activity Log for the Resource Group
+# -------------------------------------------------------------------
+
+$START_TIME_UTC = (Get-Date).ToUniversalTime().AddHours(-24).ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+az monitor activity-log list `
+  --resource-group $RG_NAME `
+  --offset 24h `
+  --max-events 50 `
+  --query "[].{Time:eventTimestamp,Operation:operationName.value,Status:status.value,Caller:caller,ResourceGroup:resourceGroupName,ResourceId:resourceId}" `
+  --output table
+
+# Optional exact window version using computed start time.
+az monitor activity-log list `
+  --resource-group $RG_NAME `
+  --start-time $START_TIME_UTC `
+  --max-events 50 `
+  --query "[].{Time:eventTimestamp,Operation:operationName.value,Status:status.value,Caller:caller,ResourceGroup:resourceGroupName,ResourceId:resourceId}" `
+  --output table
+
+# -------------------------------------------------------------------
+# 10. Inspect basic VM metrics (CPU percentage)
+# -------------------------------------------------------------------
+# Metrics can be sparse when a VM was recently deallocated or not running.
+
+$VM_IDS = az vm list `
+  --resource-group $RG_NAME `
+  --query "[].id" `
+  --output tsv
+
+foreach ($VM_ID in $VM_IDS) {
+  az monitor metrics list `
+    --resource $VM_ID `
+    --metric "Percentage CPU" `
+    --interval PT1H `
+    --aggregation Average `
+    --top 24 `
+    --output table
+}
