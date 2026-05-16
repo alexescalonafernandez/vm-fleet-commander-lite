@@ -85,3 +85,5 @@ Use the active Bicep VM fleet workflow in this order:
    - `scripts/azcli/11-cleanup-bicep-baseline-rg.azcli`
 
 Historical B2.E2 and B2.E3 sections above are preserved for milestone context and point to the relevant tags. For current execution in this repository, follow the B2.E5 workflow above.
+
+For baseline results and evidence from this milestone, see `docs/multi-vm-loop-baseline.md`.

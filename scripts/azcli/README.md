@@ -28,6 +28,7 @@ This folder contains the B2.E1 through B2.E5 Azure CLI-first workflows using `.a
   - Inspects deployed Bicep VM fleet resources and VM details post-deployment.
 - `10-vm-fleet-power-operations.azcli`
   - Handles VM fleet power-state checks, start/deallocate operations, and post-action verification.
+  - Ends the active B2.E5 runbook by deallocating all VMs after validation.
 - `11-cleanup-bicep-baseline-rg.azcli`
   - Deletes the Bicep baseline Resource Group for B2.E4 lifecycle cleanup before redeploy-from-scratch validation.
   - **Destructive**: review carefully before execution.
