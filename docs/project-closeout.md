@@ -15,7 +15,7 @@ VM Fleet Commander Lite is completed as a concise AZ-104 portfolio project that 
 | B2.E4 Lifecycle operations | Completed | `v0.5-lifecycle-operations` |
 | B2.E5 Multi-VM loop baseline | Completed | `v0.6-multi-vm-loop-baseline` |
 | B2.E6 Fleet observability diagnostics | Completed | `v0.7-fleet-observability-diagnostics` |
-| B2.E7 Final closeout | Completed | (documentation closeout) |
+| B2.E7 Final closeout | Completed | v1.0-final-lite |
 
 ## Evidence validated
 
