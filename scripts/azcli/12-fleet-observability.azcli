@@ -105,6 +105,9 @@ az network nsg rule list `
 # -------------------------------------------------------------------
 # 9. Inspect recent Activity Log for the Resource Group
 # -------------------------------------------------------------------
+# Activity Log can include platform-generated events; for example,
+# Microsoft.Advisor/recommendations/available/action means Azure Advisor
+# published recommendations and is not necessarily a user-triggered VM operation.
 
 $START_TIME_UTC = (Get-Date).ToUniversalTime().AddHours(-24).ToString("yyyy-MM-ddTHH:mm:ssZ")
 
@@ -126,7 +129,8 @@ az monitor activity-log list `
 # -------------------------------------------------------------------
 # 10. Inspect basic VM metrics (CPU percentage)
 # -------------------------------------------------------------------
-# Metrics can be sparse when a VM was recently deallocated or not running.
+# Metrics may be sparse or empty if a VM was deallocated, recently started,
+# or had no metric samples in the selected interval.
 
 $VM_IDS = az vm list `
   --resource-group $RG_NAME `
@@ -138,7 +142,8 @@ foreach ($VM_ID in $VM_IDS) {
     --resource $VM_ID `
     --metric "Percentage CPU" `
     --interval PT1H `
-    --aggregation Average `
+    --aggregation Average Minimum Maximum `
     --top 24 `
+    --query "value[0].timeseries[0].data[].{Time:timeStamp,Average:average,Minimum:minimum,Maximum:maximum}" `
     --output table
 }
