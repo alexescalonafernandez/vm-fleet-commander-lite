@@ -108,6 +108,9 @@ az network nsg rule list `
 # Activity Log can include platform-generated events; for example,
 # Microsoft.Advisor/recommendations/available/action means Azure Advisor
 # published recommendations and is not necessarily a user-triggered VM operation.
+#
+# NOTE: Empty output is acceptable. It means no matching recent Activity Log events were returned
+# for this Resource Group and time window.
 
 $START_TIME_UTC = (Get-Date).ToUniversalTime().AddHours(-24).ToString("yyyy-MM-ddTHH:mm:ssZ")
 
@@ -131,6 +134,11 @@ az monitor activity-log list `
 # -------------------------------------------------------------------
 # Metrics may be sparse or empty if a VM was deallocated, recently started,
 # or had no metric samples in the selected interval.
+# 
+# NOTE: If the output only shows timestamps without Average/Minimum/Maximum values,
+# the query succeeded but Azure Monitor did not have useful samples for the selected interval.
+# This is common when VMs are deallocated or recently inactive.
+
 
 $VM_IDS = az vm list `
   --resource-group $RG_NAME `
