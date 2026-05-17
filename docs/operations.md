@@ -87,3 +87,18 @@ Use the active Bicep VM fleet workflow in this order:
 Historical B2.E2 and B2.E3 sections above are preserved for milestone context and point to the relevant tags. For current execution in this repository, follow the B2.E5 workflow above.
 
 For baseline results and evidence from this milestone, see `docs/multi-vm-loop-baseline.md`.
+
+## B2.E6 operational diagnostics
+
+Use B2.E6 diagnostics after deployment and inspection when operational evidence is needed.
+
+- Primary script: `scripts/azcli/12-fleet-observability.azcli`
+- Runbook: `docs/fleet-diagnostics.md`
+- Scope: **read-only diagnostics** (no resource create/update/delete actions)
+
+Recommended sequence:
+
+1. Deploy and inspect the fleet using the active B2.E5 workflow.
+2. Run `scripts/azcli/12-fleet-observability.azcli` to collect diagnostics.
+3. Use `docs/fleet-diagnostics.md` to triage findings by layer.
+4. If deeper checks require running VMs, use `scripts/azcli/10-vm-fleet-power-operations.azcli`, then deallocate all VMs again at session end.

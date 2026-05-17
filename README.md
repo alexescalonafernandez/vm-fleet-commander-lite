@@ -24,6 +24,7 @@ Build a small, reproducible Azure VM environment for learning:
 - **B2.E3 - Bicep hardening and operational polish (completed)**
 - **B2.E4 - Lifecycle cleanup and redeploy validation (completed)**
 - **B2.E5 - Multi-VM Bicep loop baseline (completed)**
+- **B2.E6 - Fleet observability and operational diagnostics (completed)**
 
 ## Lite scope (in)
 
@@ -57,6 +58,13 @@ Build a small, reproducible Azure VM environment for learning:
 ## Cost-control rule
 
 Every VM session must end with **deallocate** or **cleanup**.
+
+## B2.E6 update
+
+- Added `scripts/azcli/12-fleet-observability.azcli` as a **read-only** observability workflow.
+- Added `docs/fleet-diagnostics.md` as the fleet diagnostics runbook.
+- Confirmed no Log Analytics Workspace or Azure Monitor Agent was added in this milestone.
+
 
 ## Planned milestone tags
 
