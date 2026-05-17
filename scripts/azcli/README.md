@@ -1,6 +1,6 @@
 # Azure CLI scripts
 
-This folder contains the B2.E1 through B2.E5 Azure CLI-first workflows using `.azcli` command files.
+This folder contains the B2.E1 through B2.E6 Azure CLI-first workflows using `.azcli` command files.
 
 ## Current scripts
 
@@ -32,6 +32,10 @@ This folder contains the B2.E1 through B2.E5 Azure CLI-first workflows using `.a
 - `11-cleanup-bicep-baseline-rg.azcli`
   - Deletes the Bicep baseline Resource Group for B2.E4 lifecycle cleanup before redeploy-from-scratch validation.
   - **Destructive**: review carefully before execution.
+- `12-fleet-observability.azcli`
+  - Collects read-only fleet diagnostics after deployment/inspection evidence runs.
+  - Inspects Resource Group resources, deployment outputs, VM power state, IPs/NICs/Public IPs, NSG SSH rule, Activity Log, and basic CPU metrics.
+  - Does **not** start, stop, deallocate, delete, or create resources.
 
 
 ## Safety note
