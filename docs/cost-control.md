@@ -48,6 +48,14 @@
 - Final verified state: `VM deallocated`.
 - Resource Group cleanup remains available through `11-cleanup-bicep-baseline-rg.azcli`.
 
+
+## B2.E6 cost-control notes
+
+- `12-fleet-observability.azcli` is read-only and does not deallocate or delete resources.
+- Some diagnostics may require VMs to be running; start them with `10-vm-fleet-power-operations.azcli` only when needed.
+- If VMs are started for diagnostics, they must be deallocated again after evidence capture.
+- Final expected lab state remains: `VM deallocated`.
+
 ## Session-end checklist
 
 - Verify VM power state.
